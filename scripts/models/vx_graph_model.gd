@@ -57,6 +57,7 @@ func get_all_graphs():
 	return get_results(query)
 
 func get_node_amount() -> int:
+	var relationships = VXGraphNodeModel.new()
 	var query = "SELECT COUNT(*) FROM vx_graph_nodes WHERE graph_id = ?;"
 	var result = get_results(query, [id])
 	return result[0]["COUNT(*)"]

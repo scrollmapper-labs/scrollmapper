@@ -1,189 +1,275 @@
 [gd_scene format=3 uid="uid://b5aq6u6sn6q1x"]
 
-[ext_resource type="Theme" uid="uid://0bd041bfrxwd" path="res://theme/scrollmapper_theme.tres" id="1_dbrbt"]
-[ext_resource type="Script" uid="uid://cl03wb747fsj2" path="res://scenes/modules/reader/reader.gd" id="1_qr023"]
-[ext_resource type="Texture2D" uid="uid://b1ql3scu2dyyt" path="res://images/icons/editor/ArrowLeft.svg" id="2_n0qoh"]
-[ext_resource type="Texture2D" uid="uid://4v5n7ntpejl7" path="res://images/icons/editor/Script.svg" id="3_6tww0"]
-[ext_resource type="Texture2D" uid="uid://cn2b8usxom1ce" path="res://images/icons/editor/ArrowRight.svg" id="3_omuql"]
-[ext_resource type="Texture2D" uid="uid://bruahuvo5ngj5" path="res://images/icons/editor/MirrorX.svg" id="4_6rmyb"]
-[ext_resource type="PackedScene" uid="uid://ngk4ft07vtvp" path="res://scenes/modules/reader/reader_books_selector/reader_book_selector.tscn" id="5_ueijh"]
-[ext_resource type="Texture2D" uid="uid://b6bcrf1rf2jcq" path="res://images/icons/editor/DistractionFree.svg" id="6_53t8h"]
-[ext_resource type="PackedScene" uid="uid://cboro7vr8pa53" path="res://scenes/modules/shared/exit_button.tscn" id="6_w6xnn"]
+[ext_resource type="Script" uid="uid://cl03wb747fsj2" path="res://scenes/modules/reader/reader.gd" id="script"]
+[ext_resource type="Theme" path="res://scenes/modules/reader/reader_theme.tres" id="theme"]
+[ext_resource type="PackedScene" uid="uid://ngk4ft07vtvp" path="res://scenes/modules/reader/reader_books_selector/reader_book_selector.tscn" id="selector"]
 
-[node name="Reader" type="Control" unique_id=1281666617 node_paths=PackedStringArray("books_button", "previous_chapter_button", "cross_refs_button", "next_chapter_button", "browser_margin_container", "chapters_v_box_container", "reading_v_box_container", "cross_referencing_margin_container", "cross_referencing_v_box_container", "reader_book_selector", "chapers_scroll_container", "reading_scroll_container", "cross_referencing_scroll_container", "distraction_free_button", "font_size_spin_box")]
+[sub_resource type="StyleBoxFlat" id="background"]
+bg_color = Color(0.055, 0.083, 0.11, 1)
+
+[sub_resource type="StyleBoxFlat" id="paper"]
+bg_color = Color(0.957, 0.937, 0.894, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="sidebar"]
+bg_color = Color(0.075, 0.11, 0.145, 1)
+content_margin_left = 18.0
+content_margin_right = 18.0
+content_margin_top = 22.0
+content_margin_bottom = 18.0
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+
+[node name="Reader" type="Control" node_paths=PackedStringArray("books_button", "previous_chapter_button", "cross_refs_button", "next_chapter_button", "browser_margin_container", "chapters_v_box_container", "reading_v_box_container", "cross_referencing_margin_container", "cross_referencing_v_box_container", "reader_book_selector", "chapers_scroll_container", "reading_scroll_container", "cross_referencing_scroll_container", "distraction_free_button", "font_size_spin_box")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("1_dbrbt")
-script = ExtResource("1_qr023")
-books_button = NodePath("MarginContainer/VBoxContainer/NavigatorMarginContainer/HBoxContainer/BooksButton")
-previous_chapter_button = NodePath("MarginContainer/VBoxContainer/NavigatorMarginContainer/HBoxContainer/PreviousChapterButton")
-cross_refs_button = NodePath("MarginContainer/VBoxContainer/NavigatorMarginContainer/HBoxContainer/CrossRefsButton")
-next_chapter_button = NodePath("MarginContainer/VBoxContainer/NavigatorMarginContainer/HBoxContainer/NextChapterButton")
-browser_margin_container = NodePath("MarginContainer/VBoxContainer/HBoxContainer/BrowserMarginContainer")
-chapters_v_box_container = NodePath("MarginContainer/VBoxContainer/HBoxContainer/BrowserMarginContainer/ChapersScrollContainer/MarginContainer/ChaptersVBoxContainer")
-reading_v_box_container = NodePath("MarginContainer/VBoxContainer/HBoxContainer/ReadingMarginContainer/ReadingScrollContainer/MarginContainer/ReadingVBoxContainer")
-cross_referencing_margin_container = NodePath("MarginContainer/VBoxContainer/HBoxContainer/CrossReferencingMarginContainer")
-cross_referencing_v_box_container = NodePath("MarginContainer/VBoxContainer/HBoxContainer/CrossReferencingMarginContainer/CrossReferencingScrollContainer/MarginContainer/CrossReferencingVBoxContainer")
+theme = ExtResource("theme")
+script = ExtResource("script")
+books_button = NodePath("Layout/Header/Navigation/BooksButton")
+previous_chapter_button = NodePath("Layout/Header/Navigation/PreviousChapterButton")
+cross_refs_button = NodePath("Layout/Header/Navigation/CrossRefsButton")
+next_chapter_button = NodePath("Layout/Header/Navigation/NextChapterButton")
+browser_margin_container = NodePath("Layout/Body/Chapters")
+chapters_v_box_container = NodePath("Layout/Body/Chapters/ChapterLayout/ChapersScrollContainer/ChaptersVBoxContainer")
+reading_v_box_container = NodePath("Layout/Body/ReadingPanel/ReadingScrollContainer/ArticleMargin/ReadingVBoxContainer")
+cross_referencing_margin_container = NodePath("Layout/Body/References")
+cross_referencing_v_box_container = NodePath("Layout/Body/References/ReferenceLayout/CrossReferencingScrollContainer/MarginContainer/CrossReferencingVBoxContainer")
 reader_book_selector = NodePath("ReaderBookSelector")
-chapers_scroll_container = NodePath("MarginContainer/VBoxContainer/HBoxContainer/BrowserMarginContainer/ChapersScrollContainer")
-reading_scroll_container = NodePath("MarginContainer/VBoxContainer/HBoxContainer/ReadingMarginContainer/ReadingScrollContainer")
-cross_referencing_scroll_container = NodePath("MarginContainer/VBoxContainer/HBoxContainer/CrossReferencingMarginContainer/CrossReferencingScrollContainer")
-distraction_free_button = NodePath("MarginContainer/VBoxContainer/FooterMarginContainer/HBoxContainer/HBoxContainer/DistractionFreeButton")
-font_size_spin_box = NodePath("MarginContainer/VBoxContainer/FooterMarginContainer/HBoxContainer/HBoxContainer/FontSizeSpinBox")
+chapers_scroll_container = NodePath("Layout/Body/Chapters/ChapterLayout/ChapersScrollContainer")
+reading_scroll_container = NodePath("Layout/Body/ReadingPanel/ReadingScrollContainer")
+cross_referencing_scroll_container = NodePath("Layout/Body/References/ReferenceLayout/CrossReferencingScrollContainer")
+distraction_free_button = NodePath("Layout/Footer/Settings/DistractionFreeButton")
+font_size_spin_box = NodePath("Layout/Footer/Settings/FontSizeSpinBox")
 
-[node name="BackgroundPanel" type="Panel" parent="." unique_id=1531612236]
+[node name="BackgroundPanel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("background")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1445413163]
+[node name="Layout" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = 24.0
+offset_right = -28.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/separation = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1690155337]
+[node name="Header" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
+theme_override_constants/separation = 24
 
-[node name="NavigatorMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer" unique_id=1932027355]
+[node name="Brand" type="VBoxContainer" parent="Layout/Header"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/NavigatorMarginContainer" unique_id=2065414449]
+[node name="Eyebrow" type="Label" parent="Layout/Header/Brand"]
 layout_mode = 2
-alignment = 1
+theme_override_colors/font_color = Color(0.68, 0.74, 0.77, 1)
+theme_override_font_sizes/font_size = 12
+text = "S C R O L L M A P P E R"
 
-[node name="PreviousChapterButton" type="Button" parent="MarginContainer/VBoxContainer/NavigatorMarginContainer/HBoxContainer" unique_id=1864896625]
+[node name="Title" type="Label" parent="Layout/Header/Brand"]
 layout_mode = 2
-text = "Previous Chapter
-"
-icon = ExtResource("2_n0qoh")
+theme_override_font_sizes/font_size = 26
+text = "Scripture Reader"
 
-[node name="BooksButton" type="Button" parent="MarginContainer/VBoxContainer/NavigatorMarginContainer/HBoxContainer" unique_id=1840590460]
+[node name="Navigation" type="HBoxContainer" parent="Layout/Header"]
 layout_mode = 2
-text = "Books"
-icon = ExtResource("3_6tww0")
+size_flags_vertical = 4
+theme_override_constants/separation = 8
 
-[node name="CrossRefsButton" type="Button" parent="MarginContainer/VBoxContainer/NavigatorMarginContainer/HBoxContainer" unique_id=361997888]
+[node name="PreviousChapterButton" type="Button" parent="Layout/Header/Navigation"]
+custom_minimum_size = Vector2(44, 40)
 layout_mode = 2
-text = "Cross-References"
-icon = ExtResource("4_6rmyb")
+text = "‹"
+tooltip_text = "Previous chapter (Left arrow)"
+theme_override_font_sizes/font_size = 24
 
-[node name="NextChapterButton" type="Button" parent="MarginContainer/VBoxContainer/NavigatorMarginContainer/HBoxContainer" unique_id=1072742237]
+[node name="BooksButton" type="Button" parent="Layout/Header/Navigation"]
+custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-text = "Next Chapter"
-icon = ExtResource("3_omuql")
-icon_alignment = 2
+text = "Choose book"
+tooltip_text = "Choose a book and translation"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1158001436]
+[node name="NextChapterButton" type="Button" parent="Layout/Header/Navigation"]
+custom_minimum_size = Vector2(44, 40)
+layout_mode = 2
+text = "›"
+tooltip_text = "Next chapter (Right arrow)"
+theme_override_font_sizes/font_size = 24
+
+[node name="CrossRefsButton" type="Button" parent="Layout/Header/Navigation"]
+custom_minimum_size = Vector2(140, 40)
+layout_mode = 2
+text = "Cross-references"
+toggle_mode = true
+tooltip_text = "Show references for the selected verse"
+
+[node name="Body" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 18
 
-[node name="BrowserMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1179695906]
-custom_minimum_size = Vector2(200, 0)
+[node name="Chapters" type="MarginContainer" parent="Layout/Body"]
+custom_minimum_size = Vector2(158, 0)
 layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_bottom = 18
 
-[node name="ChapersScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/BrowserMarginContainer" unique_id=1999546302]
+[node name="Background" type="Panel" parent="Layout/Body/Chapters"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("sidebar")
+
+[node name="ChapterLayout" type="VBoxContainer" parent="Layout/Body/Chapters"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="Layout/Body/Chapters/ChapterLayout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.74, 0.77, 1)
+theme_override_font_sizes/font_size = 12
+text = "CHAPTERS"
+
+[node name="ChapersScrollContainer" type="ScrollContainer" parent="Layout/Body/Chapters/ChapterLayout"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/BrowserMarginContainer/ChapersScrollContainer" unique_id=952796403]
+[node name="ChaptersVBoxContainer" type="VBoxContainer" parent="Layout/Body/Chapters/ChapterLayout/ChapersScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 0
+theme_override_constants/separation = 4
 
-[node name="ChaptersVBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/BrowserMarginContainer/ChapersScrollContainer/MarginContainer" unique_id=850320083]
+[node name="ReadingPanel" type="PanelContainer" parent="Layout/Body"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_override_styles/panel = SubResource("paper")
 
-[node name="ReadingMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1003738364]
+[node name="ReadingScrollContainer" type="ScrollContainer" parent="Layout/Body/ReadingPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ArticleMargin" type="MarginContainer" parent="Layout/Body/ReadingPanel/ReadingScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/margin_left = 44
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 44
+theme_override_constants/margin_bottom = 60
 
-[node name="ReadingScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ReadingMarginContainer" unique_id=378050320]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ReadingMarginContainer/ReadingScrollContainer" unique_id=827625232]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="ReadingVBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ReadingMarginContainer/ReadingScrollContainer/MarginContainer" unique_id=1079876667]
-layout_mode = 2
-
-[node name="CrossReferencingMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=158174068]
+[node name="ReadingVBoxContainer" type="VBoxContainer" parent="Layout/Body/ReadingPanel/ReadingScrollContainer/ArticleMargin"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 4
 
-[node name="CrossReferencingScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CrossReferencingMarginContainer" unique_id=721348173]
+[node name="References" type="MarginContainer" parent="Layout/Body"]
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CrossReferencingMarginContainer/CrossReferencingScrollContainer" unique_id=1849735785]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="CrossReferencingVBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CrossReferencingMarginContainer/CrossReferencingScrollContainer/MarginContainer" unique_id=120744006]
-layout_mode = 2
-
-[node name="FooterMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer" unique_id=764859633]
-layout_mode = 2
-theme_override_constants/margin_top = 20
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/FooterMarginContainer" unique_id=1893518198]
-layout_mode = 2
-alignment = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/FooterMarginContainer/HBoxContainer" unique_id=603755439]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="DistractionFreeButton" type="Button" parent="MarginContainer/VBoxContainer/FooterMarginContainer/HBoxContainer/HBoxContainer" unique_id=1523235500]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-toggle_mode = true
-icon = ExtResource("6_53t8h")
-icon_alignment = 1
-
-[node name="FontSizeSpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/FooterMarginContainer/HBoxContainer/HBoxContainer" unique_id=579902890]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_bottom = 18
 size_flags_horizontal = 0
-min_value = 12.0
-value = 12.0
-prefix = "Font Size:"
 
-[node name="ExitButton" parent="MarginContainer/VBoxContainer/FooterMarginContainer/HBoxContainer" unique_id=1362009204 instance=ExtResource("6_w6xnn")]
+[node name="Background" type="Panel" parent="Layout/Body/References"]
 layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("sidebar")
 
-[node name="ReaderBookSelector" parent="." unique_id=854202925 instance=ExtResource("5_ueijh")]
+[node name="ReferenceLayout" type="VBoxContainer" parent="Layout/Body/References"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Heading" type="Label" parent="Layout/Body/References/ReferenceLayout"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Cross-references"
+
+[node name="Hint" type="Label" parent="Layout/Body/References/ReferenceLayout"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.68, 0.74, 0.77, 1)
+text = "Select a verse in the reading pane."
+autowrap_mode = 3
+
+[node name="CrossReferencingScrollContainer" type="ScrollContainer" parent="Layout/Body/References/ReferenceLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Layout/Body/References/ReferenceLayout/CrossReferencingScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_right = 8
+
+[node name="CrossReferencingVBoxContainer" type="VBoxContainer" parent="Layout/Body/References/ReferenceLayout/CrossReferencingScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="Footer" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Status" type="Label" parent="Layout/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.68, 0.74, 0.77, 1)
+theme_override_font_sizes/font_size = 13
+text = "Select a verse to explore its cross-references."
+text_overrun_behavior = 3
+
+[node name="Settings" type="HBoxContainer" parent="Layout/Footer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="FontSizeSpinBox" type="SpinBox" parent="Layout/Footer/Settings"]
+custom_minimum_size = Vector2(135, 36)
+layout_mode = 2
+min_value = 14.0
+max_value = 36.0
+value = 20.0
+prefix = "Text"
+suffix = "px"
+tooltip_text = "Reading text size; applies only to the reader"
+
+[node name="Spacing" type="OptionButton" parent="Layout/Footer/Settings"]
+layout_mode = 2
+tooltip_text = "Line spacing; applies only to the reader"
+
+[node name="DistractionFreeButton" type="Button" parent="Layout/Footer/Settings"]
+layout_mode = 2
+text = "Focus mode"
+toggle_mode = true
+tooltip_text = "Hide side panels for uninterrupted reading"
+
+[node name="Home" type="Button" parent="Layout/Footer"]
+layout_mode = 2
+text = "Home"
+
+[node name="ReaderBookSelector" parent="." instance=ExtResource("selector")]
 visible = false
 layout_mode = 1

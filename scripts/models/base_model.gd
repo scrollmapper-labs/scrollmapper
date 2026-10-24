@@ -1,4 +1,4 @@
-extends Node
+extends RefCounted
 
 class_name BaseModel
 
@@ -28,12 +28,12 @@ func execute_query(query: String, params: Array = []):
 	
 
 func get_results(query: String, params: Array = []):
-	db.query_with_bindings(query, params)
+	var succeeded:bool = db.query_with_bindings(query, params)
 	db.verbosity_level = 0
 	var results = []
 	for result in db.query_result:
 		results.append(result)
-	if db.error_message != "":
+	if not succeeded:
 		print("Error executing query: %s" % db.error_message)
 
 	return results

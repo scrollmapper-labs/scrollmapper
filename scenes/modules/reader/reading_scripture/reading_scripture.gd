@@ -34,6 +34,14 @@ signal scripture_pressed(translation_abbr:String, book_name:String, chapter:int,
 
 func _ready() -> void:
 	interaction_button.pressed.connect(_on_scripture_pressed)
+	var hover = StyleBoxFlat.new()
+	hover.bg_color = Color(0.55, 0.49, 0.33, 0.09)
+	hover.corner_radius_top_left = 4
+	hover.corner_radius_top_right = 4
+	hover.corner_radius_bottom_left = 4
+	hover.corner_radius_bottom_right = 4
+	interaction_button.add_theme_stylebox_override("hover", hover)
+	interaction_button.add_theme_stylebox_override("pressed", hover)
 
 func set_verse_number(verse_number:int) -> void:
 	verse_number_text_rich_text_label.text = str(verse_number)
@@ -50,3 +58,12 @@ func convert_to_cross_reference() -> void:
 
 func _on_scripture_pressed() -> void:
 	scripture_pressed.emit(translation_abbr, book_name, chapter, verse)
+
+
+func set_highlighted(highlighted:bool) -> void:
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.55, 0.49, 0.33, 0.13 if highlighted else 0.0)
+	style.border_width_left = 2 if highlighted else 0
+	style.border_color = Color("ad9061")
+	interaction_button.add_theme_stylebox_override("normal", style)
+	interaction_button.flat = not highlighted

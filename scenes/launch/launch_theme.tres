@@ -1,0 +1,114 @@
+[gd_resource type="Theme" format=3]
+
+[ext_resource type="FontFile" path="res://theme/fonts/Noto_Sans/static/NotoSans-Regular.ttf" id="regular"]
+[ext_resource type="FontFile" path="res://theme/fonts/Noto_Sans/static/NotoSans-SemiBold.ttf" id="semibold"]
+
+[sub_resource type="StyleBoxFlat" id="card"]
+bg_color = Color(0.055, 0.092, 0.135, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.14, 0.21, 0.28, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="card_hover"]
+bg_color = Color(0.075, 0.13, 0.18, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.32, 0.65, 0.77, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="card_pressed"]
+bg_color = Color(0.035, 0.07, 0.105, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.50, 0.78, 0.88, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="focus"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.61, 0.84, 0.94, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="quiet"]
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.07, 0.11, 0.15, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.17, 0.25, 0.31, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+
+[sub_resource type="StyleBoxFlat" id="scroll_track"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0.04, 0.065, 0.09, 1)
+
+[sub_resource type="StyleBoxFlat" id="scroll_thumb"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+content_margin_top = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.28, 0.40, 0.48, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[resource]
+default_font = ExtResource("regular")
+default_font_size = 15
+Button/styles/normal = SubResource("card")
+Button/styles/hover = SubResource("card_hover")
+Button/styles/pressed = SubResource("card_pressed")
+Button/styles/focus = SubResource("focus")
+Button/colors/font_color = Color(0.87, 0.92, 0.95, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Label/colors/font_color = Color(0.91, 0.95, 0.97, 1)
+Title/base_type = &"Label"
+Title/fonts/font = ExtResource("semibold")
+CardTitle/base_type = &"Label"
+CardTitle/fonts/font = ExtResource("semibold")
+CardTitle/font_sizes/font_size = 25
+Muted/base_type = &"Label"
+Muted/colors/font_color = Color(0.58, 0.67, 0.74, 1)
+QuietButton/base_type = &"Button"
+QuietButton/styles/normal = SubResource("quiet")
+ArtworkLabel/base_type = &"Label"
+ArtworkLabel/colors/font_shadow_color = Color(0, 0, 0, 1)
+ArtworkLabel/constants/shadow_offset_x = 2
+ArtworkLabel/constants/shadow_offset_y = 2
+ArtworkLabel/constants/shadow_outline_size = 3
+VScrollBar/styles/scroll = SubResource("scroll_track")
+VScrollBar/styles/grabber = SubResource("scroll_thumb")
+VScrollBar/styles/grabber_highlight = SubResource("scroll_thumb")
+VScrollBar/styles/grabber_pressed = SubResource("scroll_thumb")
+HSeparator/constants/separation = 1

@@ -1,4 +1,4 @@
-extends Node
+extends RefCounted
 class_name SourceReferenceList
 
 var source_references:Array[SourceReference] = []
@@ -14,7 +14,7 @@ func _init():
 	var error = json.parse(source_list_text)
 	
 	# Check for errors in parsing the source list JSON, create json array if well.
-	if error != OK:
+	if error != OK or not is_valid_source_list(json.data):
 		var error_message:String = "Error parsing source list JSON."
 		print(error_message)
 		Command.print_to_console(error_message)
@@ -60,3 +60,17 @@ func get_book_source(book_name:String) -> String:
 		if source_reference.book == book_name:
 			return source_reference.source
 	return ""
+
+
+static func is_valid_source_list(data:Variant) -> bool:
+	if not data is Array or data.is_empty():
+		return false
+	for item in data:
+		if not item is Dictionary:
+			return false
+		for key in ["language", "book", "title", "source", "content_type"]:
+			if not item.get(key) is String:
+				return false
+		if item["book"].is_empty() or item["book"].get_file() != item["book"] or item["book"] in [".", ".."]:
+			return false
+	return true

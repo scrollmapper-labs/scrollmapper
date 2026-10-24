@@ -22,25 +22,30 @@ func _ready() -> void:
 
 ## Updates the source list using the command from update_source_list.gd
 func update_source_list():
-	ResourceDownloader.instance.retrieve_source_list()	
+	if not ResourceDownloader.instance.retrieve_source_list():
+		return
+	update_source_list_started.emit()
 	await ResourceDownloader.instance.download_process_complete
-	source_reference_list = SourceReferenceList.new()
+	if ResourceDownloader.instance.last_download_succeeded:
+		source_reference_list = SourceReferenceList.new()
+	update_source_list_ended.emit()
 
 ## Installs a book using the command from install_book.gd
 func install_book(book_name: String):
-	var command_string = "-b %s" % book_name
+	var command_string = "install_book -b %s" % book_name
 	Command.execute(command_string)
 
 ## Downloads a book using the command from download_book.gd
 func download_book(book_name: String):
-	ResourceDownloader.instance.retrieve_book(book_name)
+	if not ResourceDownloader.instance.retrieve_book(book_name):
+		return
 	print("Downloading book: %s" % book_name)
 	await ResourceDownloader.instance.download_process_complete
 	print("Download of %s complete." % book_name)
 
 ## Installs cross references using the command from install_cross_references.gd
 func install_cross_references():
-	var command_string = ""
+	var command_string = "install_cross_references"
 	Command.execute(command_string)
 
 ## Emits the update_source_list_started signal

@@ -6,8 +6,8 @@ extends Node
 ## Interacts with models to get data from the database and is 
 ## used by the controllers to provide data to the views.
 
-signal verses_searched(verses:Dictionary)
-signal verse_cross_references_searched(verses:Dictionary)
+signal verses_searched(verses:Array)
+signal verse_cross_references_searched(verses:Array)
 signal books_installed
 
 var translations = {}
@@ -414,6 +414,7 @@ func initiate_range_search(translation: String = "", start_book: String = "", st
 ## to be received by the subscribed objects.
 func propogate_search(translation_abbr:String, verse_results:Array, meta:Dictionary={}):
 	if verse_results.is_empty():
+		verses_searched.emit([])
 		return
 	var results:Array = []
 	for verse_result in verse_results:
@@ -427,6 +428,7 @@ func propogate_search(translation_abbr:String, verse_results:Array, meta:Diction
 func propagate_cross_reference_search(translation_abbr:String, verse_results:Array, meta:Dictionary={}):
 	
 	if verse_results.is_empty():
+		verse_cross_references_searched.emit([])
 		return
 	var results:Array = []
 	for verse_result in verse_results:	

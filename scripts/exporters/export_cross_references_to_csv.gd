@@ -31,4 +31,7 @@ func export() -> void:
 
 func save_to_file(content: String):
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
+	if file == null:
+		Command.print_to_console("Could not write export: %s" % save_path)
+		return
 	file.store_string(content)

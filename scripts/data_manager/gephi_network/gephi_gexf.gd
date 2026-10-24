@@ -103,7 +103,7 @@ func _init(gephi_network: GephiNetwork) -> void:
 		var id = str(hash(verse_meta_key))
 		attributes_str.append(attribute_template.format({
 			"id": id,
-			"title": verse_meta_key,
+			"title": verse_meta_key.xml_escape(true),
 			"type": "string"
 		}))
 
@@ -116,15 +116,15 @@ func _init(gephi_network: GephiNetwork) -> void:
 		# Add verse meta data as attributes
 		nodes_str.append(node_template.format({
 			"id": node_id,
-			"label": label,
+			"label": label.xml_escape(true),
 			"scripture_text_id": scripture_text_id,
-			"scripture_text": node.scripture_text,
+			"scripture_text": node.scripture_text.xml_escape(true),
 			"scripture_location_id": scripture_location_id,
-			"scripture_location": label,
+			"scripture_location": label.xml_escape(true),
 			"translation_id": translation_id,
-			"translation": node.translation,
+			"translation": node.translation.xml_escape(true),
 			"book_id": book_id,
-			"book": node.book,
+			"book": node.book.xml_escape(true),
 			"chapter_id": chapter_id,
 			"chapter": str(node.chapter),
 			"verse_id": verse_id,
@@ -145,8 +145,8 @@ func _init(gephi_network: GephiNetwork) -> void:
 	
 	var gexf_str = main_template.format({
 		"lastmodifieddate": gephi_network.last_modified_date,
-		"creator": gephi_network.creator,
-		"description": gephi_network.description,
+		"creator": gephi_network.creator.xml_escape(true),
+		"description": gephi_network.description.xml_escape(true),
 		"attributes": "\n".join(attributes_str),
 		"nodes": "\n".join(nodes_str),
 		"edges": "\n".join(edges_str)
@@ -162,7 +162,7 @@ func create_meta_attributes(gephi_network:GephiNetwork, verse_hash: int) -> Stri
 	var meta_attributes: PackedStringArray = PackedStringArray()
 	for key in gephi_network.verse_meta[verse_hash].keys():
 		var meta: GephiMeta = gephi_network.verse_meta[verse_hash][key]
-		meta_attributes.append('<attvalue for="%s" value="%s" />' % [str(hash(meta.key)), meta.value])
+		meta_attributes.append('<attvalue for="%s" value="%s" />' % [str(hash(meta.key)), meta.value.xml_escape(true)])
 	
 	return "\n".join(meta_attributes)
 

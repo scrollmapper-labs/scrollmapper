@@ -1,0 +1,101 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/launch/launch_card.gd" id="script"]
+[ext_resource type="Theme" path="res://scenes/launch/launch_theme.tres" id="theme"]
+
+[sub_resource type="Gradient" id="fade"]
+colors = PackedColorArray(0.035, 0.065, 0.10, 0.97, 0.035, 0.065, 0.10, 0.30)
+
+[sub_resource type="GradientTexture2D" id="fade_texture"]
+gradient = SubResource("fade")
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 0)
+
+[node name="FeatureCard" type="Button"]
+custom_minimum_size = Vector2(0, 242)
+size_flags_horizontal = 3
+theme = ExtResource("theme")
+mouse_default_cursor_shape = 2
+clip_contents = true
+script = ExtResource("script")
+
+[node name="Artwork" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+modulate = Color(0.8, 0.85, 0.9, 0.6)
+
+[node name="Shade" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+mouse_filter = 2
+texture = SubResource("fade_texture")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 26
+theme_override_constants/margin_right = 26
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_bottom = 22
+mouse_filter = 2
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+mouse_filter = 2
+
+[node name="Category" type="Label" parent="Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"ArtworkLabel"
+theme_override_colors/font_color = Color(0.53, 0.77, 0.86, 1)
+theme_override_font_sizes/font_size = 12
+text = "WORKSPACE"
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"ArtworkLabel"
+theme_override_font_sizes/font_size = 27
+text = "Workspace"
+mouse_filter = 2
+
+[node name="Description" type="Label" parent="Margin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"ArtworkLabel"
+theme_override_colors/font_color = Color(0.68, 0.76, 0.82, 1)
+theme_override_font_sizes/font_size = 15
+text = "Workspace description."
+autowrap_mode = 3
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="Margin/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"ArtworkLabel"
+theme_override_colors/font_color = Color(0.73, 0.88, 0.94, 1)
+theme_override_font_sizes/font_size = 14
+text = "Open workspace  →"
+mouse_filter = 2

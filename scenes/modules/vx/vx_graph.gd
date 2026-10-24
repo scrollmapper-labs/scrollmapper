@@ -73,6 +73,11 @@ func delete_graph():
 
 ## Simply clears the graph. Used in deleting or reloading.
 func clear_graph():
+	UserInput.force_release_drag()
+	selected_node = null
+	selected_nodes.clear()
+	VXNode.last_selected_node = null
+	current_focused_socket = null
 	for connection in vx_connections.values():
 		connection.queue_free()
 	vx_connections.clear()	
@@ -107,15 +112,11 @@ func get_full_graph_as_dictionary() -> Dictionary:
 ## This is a complex function that performs the entire process in one 
 ## continuous operation. It may be broken up or simplified later.
 func set_full_graph_from_dictionary(graph_data:Dictionary) -> void:
+	if graph_data.is_empty():
+		return
 	# Clear existing nodes and connections
-	for node in vx_nodes.values():
-		node.queue_free()
-	vx_nodes.clear()
+	clear_graph()
 
-	for connection in vx_connections.values():
-		connection.queue_free()
-	vx_connections.clear()
-	
 	await get_tree().process_frame
 	
 	# Set graph properties
@@ -125,11 +126,11 @@ func set_full_graph_from_dictionary(graph_data:Dictionary) -> void:
 
 	# Restore nodes
 	for node_data in graph_data.get("nodes", []):
-		var node:VXNode = create_node()
 		var verse:Array = ScriptureService.get_verse(node_data["translation"], node_data["book"], node_data["chapter"], node_data["verse"])
 		await get_tree().process_frame
 		if verse.size() == 0:
 			continue
+		var node:VXNode = create_node()
 		node.initiate(
 			verse[0]["verse_id"],
 			verse[0]["book_name"],
@@ -167,6 +168,9 @@ func set_full_graph_from_dictionary(graph_data:Dictionary) -> void:
 	for connection_data in graph_data.get("graph_connections", []):
 		var connection_id:int = connection_data.get("connection_id", -1)
 
+		if not connections_tmp.has(connection_id):
+			continue
+
 		var start_node_id:int = connections_tmp[connection_id].get("start_node_id", -1)
 		var end_node_id:int = connections_tmp[connection_id].get("end_node_id", -1)
 
@@ -184,6 +188,10 @@ func set_full_graph_from_dictionary(graph_data:Dictionary) -> void:
 			var end_socket:VXSocket = end_node.get_socket_by_index(end_node_side, end_node_socket_index)
 			if start_socket and end_socket:
 				connect_node_sockets(start_socket, end_socket)
+				await get_tree().process_frame
+				var restored_connection:VXConnection = start_socket.connection
+				if is_instance_valid(restored_connection):
+					restored_connection.text = connections_tmp[connection_id].get("text", "")
 	recalculate_connection_lines()
 	graph_changed.emit()
 
@@ -225,6 +233,11 @@ func remove_vx_node(node: VXNode) -> void:
 	if node.get_node_id() not in vx_nodes:
 		push_error("Node is not found.")
 		return
+	if selected_node == node:
+		selected_node = null
+	selected_nodes.erase(node)
+	if VXNode.last_selected_node == node:
+		VXNode.last_selected_node = null
 	vx_nodes.erase(node.id)
 	graph_changed.emit()
 
@@ -287,7 +300,7 @@ func create_node() -> VXNode:
 
 ## Main function to select in this class and on the node. 
 func set_selected_node(node:VXNode) -> void:
-	if selected_node != null:
+	if is_instance_valid(selected_node):
 		selected_node.is_selected = false
 	selected_node = node
 	selected_node.is_selected = true
@@ -360,7 +373,7 @@ func _on_verses_searched(results:Array):
 		node.move_node(vx_editor.get_cursor_position())
 		if not result["meta"].has("socket_direction"):
 			set_selected_node(node)
-			return
+			continue
 		match result["meta"]["socket_direction"]:
 			"SEPARATE":
 				# Handle SEPARATE socket direction
@@ -433,6 +446,8 @@ func update_selection_info_text():
 func arrange_node_positions():
 	await get_tree().process_frame # This stops issues with nodes getting skipped
 	var active_node:VXNode = selected_node
+	if not is_instance_valid(active_node):
+		return
 	var connected_nodes:Dictionary = active_node.get_connected_nodes()
 
 	var top_nodes: Array = connected_nodes.get("top", [])

@@ -1,0 +1,76 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/launch/launch_card.gd" id="script"]
+[ext_resource type="Theme" path="res://scenes/launch/launch_theme.tres" id="theme"]
+[ext_resource type="Texture2D" path="res://scenes/launch/assets/scrollmapper_labs.png" id="artwork"]
+
+[node name="ProjectCard" type="Button"]
+custom_minimum_size = Vector2(0, 104)
+size_flags_horizontal = 3
+theme = ExtResource("theme")
+mouse_default_cursor_shape = 2
+clip_contents = true
+script = ExtResource("script")
+title = "Project"
+description = "Open project on GitHub  ↗"
+artwork = ExtResource("artwork")
+
+[node name="Artwork" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+mouse_filter = 2
+texture = ExtResource("artwork")
+expand_mode = 1
+stretch_mode = 6
+modulate = Color(0.60, 0.70, 0.80, 0.7)
+
+[node name="Shade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+mouse_filter = 2
+color = Color(0.015, 0.03, 0.05, 0.55)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_bottom = 18
+mouse_filter = 2
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"ArtworkLabel"
+theme_override_font_sizes/font_size = 17
+text = "Project"
+mouse_filter = 2
+
+[node name="Description" type="Label" parent="Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"ArtworkLabel"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.79, 0.85, 0.88, 1)
+text = "Open project on GitHub  ↗"
+autowrap_mode = 3
+mouse_filter = 2

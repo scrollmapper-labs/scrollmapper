@@ -34,6 +34,7 @@ func _ready() -> void:
 	syncronize_button.pressed.connect(_on_syncronize_button_pressed)
 	done_button.pressed.connect(_on_done_button_pressed)
 	install_queue_processed.connect(do_install_queue)
+	LibraryManager.update_source_list_ended.connect(update_lists)
 	update_lists()
 
 func update_lists():
@@ -71,6 +72,8 @@ func _on_done_button_pressed():
 
 
 func syncronize_book_selections():
+	if is_processing_book:
+		return
 	install_queue.clear()
 	install_queue_next_index = 0
 	for book_listing in listings.keys():
@@ -100,19 +103,26 @@ func do_install_queue() -> void:
 func do_install_book_process(book_listing:BookListing):
 	move_progress_dialog_to_front(true)
 	is_processing_book = true
+	syncronize_button.disabled = true
+	update_list_button.disabled = true
+	done_button.disabled = true
 	var install_book:InstallBook = InstallBook.new(book_listing.book)
 	if !install_book.is_book_file_available():
-		ResourceDownloader.instance.retrieve_book(book_listing.book)
-		await ResourceDownloader.instance.download_process_complete
+		if ResourceDownloader.instance.retrieve_book(book_listing.book):
+			await ResourceDownloader.instance.download_process_complete
 		
-	await install_book.install()	
+	var installed:bool = await install_book.install()
 
 	is_processing_book = false
+	syncronize_button.disabled = false
+	update_list_button.disabled = false
+	done_button.disabled = false
 	book_process_complete.emit()
-	install_queue_processed.emit()
-	book_listing.is_installed = true
+	book_listing.is_installed = installed
 	book_listing.set_current_status()
 	move_progress_dialog_to_front(false)
+	install_book.free()
+	install_queue_processed.emit()
 
 func move_progress_dialog_to_front(front:bool = true) -> void:
 	if front:
@@ -128,6 +138,9 @@ func do_uninstall_book_process(book_listing:BookListing):
 		ScriptureService.uninstall_translation(book_listing.book)
 
 	is_processing_book = false
+	syncronize_button.disabled = false
+	update_list_button.disabled = false
+	done_button.disabled = false
 	book_process_complete.emit()
 	book_listing.is_installed = false
 	book_listing.set_current_status()

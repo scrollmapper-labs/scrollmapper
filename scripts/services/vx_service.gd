@@ -12,8 +12,8 @@ func get_or_create_graph(id:int = -1) -> Dictionary:
 
 	if id > 0:
 		var graph_data = vx_graph_model.get_graph_by_id(id)
-		if graph_data.size() == 0:
-			var results:Dictionary = vx_graph_model.get_graph_by_id(id)
+		if graph_data.size() > 0:
+			var results:Dictionary = graph_data
 			vx_graph_data["id"] = results["id"]
 			vx_graph_data["graph_name"] = results["graph_name"]
 			vx_graph_data["graph_description"] = results["graph_description"]
@@ -29,7 +29,7 @@ func get_or_create_graph(id:int = -1) -> Dictionary:
 func get_last_used_graph() -> Dictionary:
 	var vx_graph_model:VXGraphModel = VXGraphModel.new()
 	var last_graph_id:Dictionary = MetaService.get_meta_data("last_used_graph_id")
-	var results:Dictionary = vx_graph_model.get_graph_by_id(last_graph_id["id"])
+	var results:Dictionary = vx_graph_model.get_graph_by_id(int(last_graph_id.get("id", -1)))
 	return results
 
 ## This function saves a graph.
@@ -43,6 +43,9 @@ func get_last_used_graph() -> Dictionary:
 ## Then it creates the nodes and connections. Finally, it creates the
 ## graph-node and graph-connection relationships.
 func save_graph(graph_data:Dictionary) -> void:
+	if not graph_data.has("id") or not is_valid_graph_export(graph_data):
+		print("Invalid graph data; saved graph was preserved.")
+		return
 	# First, create the graph...
 	if graph_data.has("id") and graph_data.has("graph_name") and graph_data.has("graph_description"):
 		clear_graph(graph_data["id"])
@@ -50,7 +53,7 @@ func save_graph(graph_data:Dictionary) -> void:
 		vx_graph_model.id = graph_data["id"]
 		vx_graph_model.graph_name = graph_data["graph_name"]
 		vx_graph_model.graph_description = graph_data["graph_description"]
-		vx_graph_model.save()
+		graph_data["id"] = vx_graph_model.save()
 
 		MetaService.set_meta_data("last_used_graph_id", {"id": vx_graph_model.id})
 	else:
@@ -158,6 +161,8 @@ func save_graph_connections(graph_data:Dictionary) -> void:
 ## Gets the full saved graph data including nodes, connections, and relationships.
 func get_saved_graph(id: int) -> Dictionary:
 	var vx_graph_model: VXGraphModel = VXGraphModel.new()
+	var vx_graph_node_model: VXGraphNodeModel = VXGraphNodeModel.new()
+	var vx_graph_connection_model: VXGraphConnectionModel = VXGraphConnectionModel.new()
 	var graph_data: Dictionary = vx_graph_model.get_graph_by_id(id)
 
 	if graph_data.size() == 0:
@@ -182,13 +187,11 @@ func get_saved_graph(id: int) -> Dictionary:
 		full_graph_data["connections"].append(connection)
 
 	# Get graph-node relationships
-	var vx_graph_node_model: VXGraphNodeModel = VXGraphNodeModel.new()
 	var graph_nodes = vx_graph_node_model.get_nodes_by_graph(id)
 	for graph_node in graph_nodes:
 		full_graph_data["graph_nodes"].append(graph_node)
 
 	# Get graph-connection relationships
-	var vx_graph_connection_model: VXGraphConnectionModel = VXGraphConnectionModel.new()
 	var graph_connections = vx_graph_connection_model.get_connections_by_graph(id)
 	for graph_connection in graph_connections:
 		full_graph_data["graph_connections"].append(graph_connection)
@@ -206,7 +209,7 @@ func get_saved_graph_from_json(json_string: String) -> Dictionary:
 		return {}
 
 	var graph_data = json.data
-	if typeof(graph_data) != TYPE_DICTIONARY:
+	if not is_valid_graph_export(graph_data):
 		push_error("Unexpected data format in JSON string.")
 		return {}
 
@@ -260,11 +263,15 @@ func get_saved_graph_from_json(json_string: String) -> Dictionary:
 
 ## Creates a new empty graph and returns its data.
 func create_new_empty_graph() -> Dictionary:
-	var vx_graph: VXGraph = VXGraph.new()
+	var vx_graph: VXGraphModel = VXGraphModel.new()
 	vx_graph.graph_name = "New Graph"
 	vx_graph.graph_description = "This is a new graph."
-	vx_graph.id = VXGraphModel.new().save() # Save the new graph to the database and get its ID
-	return vx_graph.get_full_graph_as_dictionary()
+	vx_graph.id = vx_graph.save() # Save the new graph to the database and get its ID
+	var graph_data:Dictionary = get_graph_data_template()
+	graph_data["id"] = vx_graph.id
+	graph_data["graph_name"] = vx_graph.graph_name
+	graph_data["graph_description"] = vx_graph.graph_description
+	return graph_data
 
 func delete_graph(id:int) -> void:
 	var vx_graph_model: VXGraphModel = VXGraphModel.new()
@@ -316,3 +323,36 @@ func get_graph_data_template() -> Dictionary:
 		"graph_nodes": [],
 		"graph_connections": []
 	}
+
+
+func is_valid_graph_export(data:Variant) -> bool:
+	if not data is Dictionary:
+		return false
+	for key in ["graph_name", "graph_description"]:
+		if not data.get(key) is String:
+			return false
+	for key in ["nodes", "connections"]:
+		if not data.get(key) is Array:
+			return false
+	var node_ids:Dictionary = {}
+	for node in data["nodes"]:
+		if not node is Dictionary:
+			return false
+		for key in ["book", "translation"]:
+			if not node.get(key) is String:
+				return false
+		for key in ["id", "chapter", "verse", "position_x", "position_y", "top_sockets_amount", "bottom_sockets_amount", "left_sockets_amount", "right_sockets_amount"]:
+			if not (node.get(key) is int or node.get(key) is float):
+				return false
+		if node_ids.has(int(node["id"])):
+			return false
+		node_ids[int(node["id"])] = true
+	for connection in data["connections"]:
+		if not connection is Dictionary or not connection.get("text") is String:
+			return false
+		for key in ["id", "start_node", "end_node", "start_node_side", "end_node_side", "start_socket_index", "end_socket_index"]:
+			if not (connection.get(key) is int or connection.get(key) is float):
+				return false
+		if not connection.has("is_parallel") or not node_ids.has(int(connection["start_node"])) or not node_ids.has(int(connection["end_node"])):
+			return false
+	return true

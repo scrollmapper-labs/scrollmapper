@@ -12,6 +12,7 @@ var http_request:HTTPRequest = null
 var file_path:Types.DataDir = Types.DataDir.DATA
 var file_name:String = "null"
 var is_processing_request:bool = false
+var last_download_succeeded:bool = false
 
 signal download_process_started
 signal download_process_complete
@@ -20,44 +21,77 @@ func _ready() -> void:
 	if instance == null:
 		instance = self		
 	http_request = HTTPRequest.new()
+	http_request.timeout = 30.0
 	add_child(http_request)	
 	http_request.request_completed.connect(_http_request_completed)
 
-func retrieve_source_list() -> void:
+func retrieve_source_list() -> bool:
+	if is_processing_request:
+		return false
 	file_name = "book_list.json"
-	download_file(data_manager.source_list, Types.DataDir.SOURCES)
 	Command.print_to_console("Retrieving book_list.json from %s"%data_manager.source_list)
+	return download_file(data_manager.source_list, Types.DataDir.SOURCES)
 	
-func retrieve_book(book_name:String) -> void:
+func retrieve_book(book_name:String) -> bool:
+	if is_processing_request:
+		return false
 	var source_reference_list:SourceReferenceList = SourceReferenceList.new()
 	file_name = book_name + ".json"
 	var book_source:String = source_reference_list.get_book_source(book_name)
 	if book_source.is_empty():
 		Command.print_to_console("Book invalid. Run show_source_list in the Scrollmapper terminal to see which books are available.")
-		return
-	download_file(book_source, Types.DataDir.SOURCES)
+		return false
 	Command.print_to_console("Getting book '%s' from %s"%[book_name, book_source])
+	return download_file(book_source, Types.DataDir.SOURCES)
 	
-func download_file(file_url:String, file_path:Types.DataDir) -> void:
+func download_file(file_url:String, file_path:Types.DataDir) -> bool:
+	if is_processing_request:
+		return false
 	is_processing_request = true
+	last_download_succeeded = false
 	download_process_started.emit()
 	self.file_path = file_path
 	var error = http_request.request(file_url)
 	if error != OK:
-		var error_message:String = "An error occurred in the HTTP request."
-		Command.print_to_console(error_message)
-		push_error(error_message)
-		download_failed.emit()
+		_finish_download.call_deferred(false, "An error occurred in the HTTP request.")
+	return true
 
 func _http_request_completed(result, response_code, headers, body):
+	if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
+		_finish_download(false, "Download failed (HTTP %s, result %s)." % [response_code, result])
+		return
 	var json = JSON.new()
-	json.parse(body.get_string_from_utf8())
-	var response = json.get_data()
+	if json.parse(body.get_string_from_utf8()) != OK:
+		_finish_download(false, "Downloaded file is not valid JSON.")
+		return
+	if file_name == "book_list.json":
+		if not SourceReferenceList.is_valid_source_list(json.data):
+			_finish_download(false, "Downloaded source list is invalid.")
+			return
+	elif not InstallBook.is_valid_book_data(json.data):
+		_finish_download(false, "Downloaded book data is invalid.")
+		return
 	var sources_file_path = data_manager.get_scrollmapper_sources_dir().path_join(file_name)
-	var file = FileAccess.open(sources_file_path, FileAccess.WRITE)
-	file.store_string(body.get_string_from_utf8())
+	var temporary_path = sources_file_path + ".download"
+	var file = FileAccess.open(temporary_path, FileAccess.WRITE)
+	if file == null:
+		_finish_download(false, "Cannot save downloaded file.")
+		return
+	file.store_buffer(body)
+	file.flush()
+	var write_error = file.get_error()
 	file.close()
-	download_complete.emit(sources_file_path)
-	Command.print_to_console("Download complete at %s"%sources_file_path)
-	download_process_complete.emit()
+	if write_error != OK or DirAccess.rename_absolute(temporary_path, sources_file_path) != OK:
+		_finish_download(false, "Cannot replace downloaded file.")
+		return
+	_finish_download(true, "Download complete at %s" % sources_file_path, sources_file_path)
+
+func _finish_download(succeeded:bool, message:String, saved_path:String = "") -> void:
+	last_download_succeeded = succeeded
 	is_processing_request = false
+	Command.print_to_console(message)
+	if succeeded:
+		download_complete.emit(saved_path)
+	else:
+		download_failed.emit()
+	download_process_complete.emit()

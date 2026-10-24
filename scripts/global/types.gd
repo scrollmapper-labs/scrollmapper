@@ -9,6 +9,7 @@ enum LevelType{
 	BOOK_LIBRARY,
 	READER,
 	META_EDITOR,
+	SPLASH,
 }
 
 enum DataDir{

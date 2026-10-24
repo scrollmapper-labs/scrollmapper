@@ -106,7 +106,7 @@ func populate_translation_options(index:int = 0):
 func populate_book_options(index:int = 0):
 	reset_book_options()
 	var selected_translation_id = option_translation.get_selected_id()
-	if selected_translation_id == 0:
+	if selected_translation_id < 0:
 		return
 	var translation:String = ScriptureService.get_translation_by_id(selected_translation_id)["translation_abbr"]
 	var books = ScriptureService.get_all_books(translation)
@@ -165,6 +165,7 @@ func reset_book_options():
 func reset_chapter_options():
 	option_chapters.clear()
 	option_chapters.add_item("-")
+	reset_verse_options()
 
 ## Resets the verse options.
 func reset_verse_options():
@@ -177,7 +178,7 @@ func reset_verse_options():
 func populate_to_books_options(index:int = 0):
 	reset_to_book_options()
 	var selected_translation_id = option_translation.get_selected_id()
-	if selected_translation_id == 0:
+	if selected_translation_id < 0:
 		return
 	var translation:String = ScriptureService.get_translation_by_id(selected_translation_id)["translation_abbr"]
 	var books = ScriptureService.get_all_books(translation)
@@ -225,6 +226,7 @@ func reset_to_book_options():
 func reset_to_chapter_options():
 	option_to_chapters.clear()
 	option_to_chapters.add_item("-")
+	reset_to_verse_options()
 
 ## Resets the to-verse options.
 func reset_to_verse_options():
@@ -246,7 +248,10 @@ func set_scope(index:int):
 			search_scope = Types.SearchScope.EXTRA_CANNONICAL
 		_:
 			search_scope = Types.SearchScope.ALL_SCRIPTURE
+	option_scope.select(index)
 	populate_translation_options()
+	populate_book_options()
+	populate_to_books_options()
 
 ## Resets all options.
 func reset_all_options():

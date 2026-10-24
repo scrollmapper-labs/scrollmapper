@@ -5,7 +5,8 @@ extends Node
 
 const EXPLORE = preload("res://scenes/modules/explore/explorer.tscn")
 const VX_GRAPH = preload("res://scenes/modules/vx/vx_graph.tscn")
-const HOME = preload("res://scenes/home/home.tscn")
+const HOME = preload("res://scenes/launch/main_menu.tscn")
+const SPLASH = preload("res://scenes/launch/splash.tscn")
 const BOOK_LIBRARY = preload("res://scenes/modules/book_library/book_library.tscn")
 const READER = preload("res://scenes/modules/reader/reader.tscn")
 const META_EDITOR = preload("res://scenes/modules/meta_editor/meta_editor.tscn")
@@ -26,7 +27,7 @@ var current_level:Node = null
 signal level_ready(level:Node)
 
 func _ready() -> void:
-	load_level("HOME")
+	load_level("SPLASH")
 
 ## This is called from a level when it is loaded. 
 ## The main purpose is for unloading later. 
@@ -41,11 +42,15 @@ func register_level(level:Node) -> void:
 func load_level(level:String, custom:String = "") -> void:
 	if current_level != null:
 		current_level.queue_free()
-	var level_type:Types.LevelType = Types.LevelType.get(level.to_upper(), "HOME")
+	var level_type:Types.LevelType = Types.LevelType.get(level.to_upper(), Types.LevelType.HOME)
 	match level_type:
+		Types.LevelType.SPLASH:
+			var splash_level:Control = SPLASH.instantiate()
+			modules.add_child(splash_level)
+			register_level(splash_level)
 		Types.LevelType.HOME:
-			var home_level:Node3D = HOME.instantiate()
-			main.add_child(home_level)
+			var home_level:Control = HOME.instantiate()
+			modules.add_child(home_level)
 			register_level(home_level)
 		Types.LevelType.VX_GRAPH:
 			var vx_graph_level:VXGraph = VX_GRAPH.instantiate()
@@ -68,5 +73,6 @@ func load_level(level:String, custom:String = "") -> void:
 			modules.add_child(meta_editor_level)
 			register_level(meta_editor_level)
 		_:
-			var home_level:Node3D = HOME.instantiate()
-			main.add_child(home_level)
+			var home_level:Control = HOME.instantiate()
+			modules.add_child(home_level)
+			register_level(home_level)

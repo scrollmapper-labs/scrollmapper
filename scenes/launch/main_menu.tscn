@@ -1,0 +1,241 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/launch/main_menu.gd" id="script"]
+[ext_resource type="Theme" path="res://scenes/launch/launch_theme.tres" id="theme"]
+[ext_resource type="Texture2D" path="res://scenes/launch/assets/scrollmapper_labs.png" id="mark"]
+[ext_resource type="Texture2D" path="res://scenes/launch/assets/scrollmapper_splash.png" id="network"]
+[ext_resource type="Script" path="res://scenes/launch/launch_button.gd" id="button"]
+[ext_resource type="PackedScene" path="res://scenes/launch/feature_card.tscn" id="feature"]
+[ext_resource type="PackedScene" path="res://scenes/launch/project_card.tscn" id="project"]
+
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("feature_grid", "tools_grid", "projects_grid", "content_margin", "version_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("theme")
+script = ExtResource("script")
+feature_grid = NodePath("Scroll/ContentMargin/Layout/FeatureGrid")
+tools_grid = NodePath("Scroll/ContentMargin/Layout/ToolsGrid")
+projects_grid = NodePath("Scroll/ContentMargin/Layout/ProjectsGrid")
+content_margin = NodePath("Scroll/ContentMargin")
+version_label = NodePath("Scroll/ContentMargin/Layout/Footer/Version")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.025, 0.045, 0.068, 1)
+mouse_filter = 2
+
+[node name="Scroll" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="ContentMargin" type="MarginContainer" parent="Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="Layout" type="VBoxContainer" parent="Scroll/ContentMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="Header" type="HBoxContainer" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Mark" type="TextureRect" parent="Scroll/ContentMargin/Layout/Header"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+texture = ExtResource("mark")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Brand" type="VBoxContainer" parent="Scroll/ContentMargin/Layout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="Scroll/ContentMargin/Layout/Header/Brand"]
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 20
+text = "Scrollmapper"
+
+[node name="Context" type="Label" parent="Scroll/ContentMargin/Layout/Header/Brand"]
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 11
+text = "RESEARCH WORKSPACE"
+
+[node name="Documentation" type="Button" parent="Scroll/ContentMargin/Layout/Header"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"QuietButton"
+text = "Documentation  ↗"
+mouse_default_cursor_shape = 2
+script = ExtResource("button")
+destination_url = "https://github.com/scrollmapper-labs/scrollmapper/blob/main/documentation/user/README.md"
+
+[node name="Rule" type="HSeparator" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+
+[node name="Intro" type="VBoxContainer" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Scroll/ContentMargin/Layout/Intro"]
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 36
+text = "Explore texts. Discover connections."
+autowrap_mode = 3
+
+[node name="Description" type="Label" parent="Scroll/ContentMargin/Layout/Intro"]
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 16
+text = "A workspace for comparative reading, cross-reference analysis, and visual mapping."
+autowrap_mode = 3
+
+[node name="WorkspaceHeading" type="Label" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+text = "ANALYSIS WORKSPACES"
+
+[node name="FeatureGrid" type="GridContainer" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+
+[node name="Mapping" parent="Scroll/ContentMargin/Layout/FeatureGrid" instance=ExtResource("feature")]
+layout_mode = 2
+title = "Scroll Mapping"
+description = "Build and inspect visual networks of related passages."
+category = "01  /  VX GRAPH"
+action_text = "Open mapping workspace  →"
+destination_level = "VX_GRAPH"
+tooltip_text = "VX Graph / Scroll Mapping"
+artwork = ExtResource("mark")
+
+[node name="Explorer" parent="Scroll/ContentMargin/Layout/FeatureGrid" instance=ExtResource("feature")]
+layout_mode = 2
+title = "Explorer"
+description = "Search across translations and trace cross-references between texts."
+category = "02  /  SEARCH & DISCOVERY"
+action_text = "Open explorer  →"
+destination_level = "EXPLORER"
+tooltip_text = "Explorer"
+
+[node name="ToolsGrid" type="GridContainer" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+columns = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+
+[node name="Reader" parent="Scroll/ContentMargin/Layout/ToolsGrid" instance=ExtResource("feature")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 242)
+title = "Reader"
+description = "Read, navigate chapters, and examine related passages."
+category = "03  /  READING"
+action_text = "Open reader  →"
+destination_level = "READER"
+tooltip_text = "Reader"
+
+[node name="Library" parent="Scroll/ContentMargin/Layout/ToolsGrid" instance=ExtResource("feature")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 242)
+title = "Book Library"
+description = "Manage the texts and translations available in your workspace."
+category = "04  /  DATA MANAGEMENT"
+action_text = "Manage library  →"
+destination_level = "BOOK_LIBRARY"
+tooltip_text = "Book Library"
+
+[node name="Metadata" parent="Scroll/ContentMargin/Layout/ToolsGrid" instance=ExtResource("feature")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 242)
+title = "Meta Editor"
+description = "Organize annotations and attributes for deeper analysis."
+category = "05  /  ANNOTATION"
+action_text = "Edit metadata  →"
+destination_level = "META_EDITOR"
+tooltip_text = "Meta Editor"
+
+[node name="ProjectsHeading" type="Label" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+text = "PROJECTS & RESOURCES"
+
+[node name="ProjectsGrid" type="GridContainer" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+columns = 4
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+
+[node name="BibleDatabases" parent="Scroll/ContentMargin/Layout/ProjectsGrid" instance=ExtResource("project")]
+layout_mode = 2
+title = "Bible Databases"
+description = "Translations & cross-references  ↗"
+destination_url = "https://github.com/scrollmapper/bible_databases"
+tooltip_text = "https://github.com/scrollmapper/bible_databases"
+
+[node name="Deuterocanonical" parent="Scroll/ContentMargin/Layout/ProjectsGrid" instance=ExtResource("project")]
+layout_mode = 2
+title = "Deuterocanonical"
+description = "Extended text datasets  ↗"
+destination_url = "https://github.com/scrollmapper/bible_databases_deuterocanonical"
+tooltip_text = "https://github.com/scrollmapper/bible_databases_deuterocanonical"
+
+[node name="Labs" parent="Scroll/ContentMargin/Layout/ProjectsGrid" instance=ExtResource("project")]
+layout_mode = 2
+title = "Scrollmapper Labs"
+description = "Research & development  ↗"
+destination_url = "https://github.com/scrollmapper-labs"
+tooltip_text = "https://github.com/scrollmapper-labs"
+
+[node name="Documentation" parent="Scroll/ContentMargin/Layout/ProjectsGrid" instance=ExtResource("project")]
+layout_mode = 2
+title = "Documentation"
+description = "User guide & tutorials  ↗"
+destination_url = "https://github.com/scrollmapper-labs/scrollmapper/blob/main/documentation/user/README.md"
+tooltip_text = "https://github.com/scrollmapper-labs/scrollmapper/blob/main/documentation/user/README.md"
+
+[node name="Footer" type="HBoxContainer" parent="Scroll/ContentMargin/Layout"]
+layout_mode = 2
+
+[node name="About" type="Label" parent="Scroll/ContentMargin/Layout/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+text = "Open-source tools for text analysis."
+text_overrun_behavior = 3
+
+[node name="Version" type="Label" parent="Scroll/ContentMargin/Layout/Footer"]
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+text = "VERSION"

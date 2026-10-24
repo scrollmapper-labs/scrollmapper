@@ -45,7 +45,7 @@ func set_progress_dialogue_values(current_amount:int, max_amount:int) -> void:
 
 ## Will show the file save dialogue.
 func show_file_save_dialog(filters:PackedStringArray = ["*.gexf"]) -> FileDialog:
-	file_load_dialog.set_filters(filters)
+	file_save_dialog.set_filters(filters)
 	file_save_dialog.show()
 	return file_save_dialog
 

@@ -64,8 +64,8 @@ func get_cross_references_for_verse(from_book: String, from_chapter: int, from_v
 		%s_books b ON cr.to_book = b.book_name
 	JOIN 
 		%s_verses v ON b.id = v.book_id
-					AND v.chapter BETWEEN cr.to_chapter_start AND cr.to_chapter_end
-					AND v.verse BETWEEN cr.to_verse_start AND cr.to_verse_end
+					AND (v.chapter > cr.to_chapter_start OR (v.chapter = cr.to_chapter_start AND v.verse >= cr.to_verse_start))
+					AND (v.chapter < cr.to_chapter_end OR (v.chapter = cr.to_chapter_end AND v.verse <= cr.to_verse_end))
 	JOIN 
 		translations t ON b.translation_id = t.id
 	WHERE 
@@ -74,7 +74,8 @@ func get_cross_references_for_verse(from_book: String, from_chapter: int, from_v
 		AND cr.from_verse = ?
 	""" % [translation, translation]
 
-	if translation.to_lower() == "scrollmapper":
+	var params:Array = [from_book, from_chapter, from_verse]
+	if translation.to_lower() == "scrollmapper" and not get_results("SELECT name FROM sqlite_master WHERE name = 'kjv_verses' COLLATE NOCASE;").is_empty():
 		query += """
 		UNION
 		SELECT 
@@ -89,8 +90,8 @@ func get_cross_references_for_verse(from_book: String, from_chapter: int, from_v
 			KJV_books b ON cr.to_book = b.book_name
 		JOIN 
 			KJV_verses v ON b.id = v.book_id
-						AND v.chapter BETWEEN cr.to_chapter_start AND cr.to_chapter_end
-						AND v.verse BETWEEN cr.to_verse_start AND cr.to_verse_end
+						AND (v.chapter > cr.to_chapter_start OR (v.chapter = cr.to_chapter_start AND v.verse >= cr.to_verse_start))
+						AND (v.chapter < cr.to_chapter_end OR (v.chapter = cr.to_chapter_end AND v.verse <= cr.to_verse_end))
 		JOIN 
 			translations t ON b.translation_id = t.id
 		WHERE 
@@ -99,8 +100,9 @@ func get_cross_references_for_verse(from_book: String, from_chapter: int, from_v
 			AND cr.from_verse = ?
 		"""
 
-	query += "ORDER BY cr.votes DESC;"
-	return get_results(query, [from_book, from_chapter, from_verse, from_book, from_chapter, from_verse])
+		params.append_array([from_book, from_chapter, from_verse])
+	query += "ORDER BY votes DESC;"
+	return get_results(query, params)
 
 # New method to get a specific cross-reference
 func get_cross_reference(id: int) -> Dictionary:

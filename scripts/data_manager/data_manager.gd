@@ -25,7 +25,7 @@ func create_initial_database(overwrite: bool = false):
 	
 	var default_db_path:String = get_executable_sources_dir().path_join("database.sqlite")
 
-	if Engine.is_editor_hint():
+	if OS.has_feature("editor"):
 		## We are running from the editor. So copy from res:// instead.
 		default_db_path = "res://sources/database.sqlite"
 
@@ -40,7 +40,7 @@ func create_initial_book_list(overwrite: bool = false):
 
 	var default_book_list_path:String = get_executable_sources_dir().path_join("book_list.json")
 
-	if Engine.is_editor_hint():
+	if OS.has_feature("editor"):
 		## We are running from the editor. So copy from res:// instead.
 		default_book_list_path = "res://sources/book_list.json"
 	print(default_book_list_path)

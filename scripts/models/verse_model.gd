@@ -48,7 +48,7 @@ func bulk_save(verses: Array):
 		params.append(verse.verse)
 		params.append(verse.text)
 	
-	insert_query += ",".join(values) + ";"
+	insert_query += ",".join(values) + " ON CONFLICT(id) DO UPDATE SET verse_hash = excluded.verse_hash, book_id = excluded.book_id, chapter = excluded.chapter, verse = excluded.verse, text = excluded.text;"
 	execute_query(insert_query, params)
 
 func save():
@@ -154,7 +154,7 @@ func get_verses_by_ids(verse_ids: Array) -> Array:
 	ORDER BY CASE v.id %s END
 	""" % [translation, translation, placeholders, order_clause]
 
-	return get_results(query, verse_ids + verse_ids)
+	return get_results(query, verse_ids)
 
 # Function to get a verse by its hash
 func get_verse_by_hash(verse_hash: int) -> Dictionary:
@@ -205,7 +205,7 @@ func get_verses_by_verse_hashes(verse_hashes: Array) -> Array:
 	ORDER BY CASE v.verse_hash %s END
 	""" % [translation, translation, placeholders, order_clause]
 
-	return get_results(query, verse_hashes + verse_hashes)
+	return get_results(query, verse_hashes)
 
 # Get verses by range
 func get_verses_by_range(start_book: String, start_chapter: int, start_verse: int, end_book: String, end_chapter: int, end_verse: int) -> Array:

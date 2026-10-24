@@ -70,7 +70,8 @@ func add_verse_meta(_verse_meta:Dictionary) -> void:
 	meta.verse_hash = _verse_meta.get("verse_hash")
 	meta.key = _verse_meta.get("key")
 	meta.value = _verse_meta.get("value")
-	verse_meta[meta.verse_hash] = {}
+	if not verse_meta.has(meta.verse_hash):
+		verse_meta[meta.verse_hash] = {}
 	verse_meta[meta.verse_hash][meta.key] = meta
 
 ## Add a node to the network.

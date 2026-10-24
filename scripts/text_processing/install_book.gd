@@ -36,7 +36,7 @@ func check_and_delete_existing_book():
 		var verse_model = VerseModel.new(translation)
 		var verses = verse_model.get_verses(book)
 		for verse in verses:
-			verse_model.id = verse["id"]
+			verse_model.id = verse["verse_id"]
 			verse_model.delete()
 		book_model.delete()
 
@@ -48,13 +48,15 @@ func is_book_file_available() -> bool:
 		return false
 	return true
 
-func install():
-	DialogueManager.show_progress_dialog()
-	await GameManager.main.get_tree().process_frame
-	check_and_delete_existing_book()
+func install() -> bool:
+	if source_reference == null:
+		return false
 	var data_manager:DataManager = DataManager.new()
 	var book_path = data_manager.get_book_path(book)
 	var book_file = FileAccess.open(book_path, FileAccess.READ)
+	if book_file == null:
+		Command.print_to_console("Book file is unavailable: %s" % book)
+		return false
 	var book_text_file = book_file.get_as_text()
 	var json = JSON.new()
 	var error = json.parse(book_text_file)
@@ -62,8 +64,16 @@ func install():
 		var error_message = "Error parsing book JSON."
 		Command.print_to_console(error_message)
 		push_error(error_message)
-		return
+		return false
 	var data = json.data
+	if not is_valid_book_data(data):
+		Command.print_to_console("Invalid book data: %s" % book)
+		return false
+	DialogueManager.show_progress_dialog()
+	await GameManager.main.get_tree().process_frame
+	total_iterations = 0
+	completed_iterations = 0
+	check_and_delete_existing_book()
 
 	var translation_model = BibleTranslationModel.new()
 	translation_model.translation_abbr = translation
@@ -108,6 +118,7 @@ func install():
 	book_install_completed.emit()
 	await GameManager.main.get_tree().process_frame
 	DialogueManager.hide_progress_dialog()
+	return true
 
 ## The total number of iterations that will be required to complete operation.
 func set_total_iterations(data:Dictionary) -> void:
@@ -115,3 +126,21 @@ func set_total_iterations(data:Dictionary) -> void:
 		for chapter_data in book_data["chapters"]:
 			for verse_data in chapter_data["verses"]:
 				total_iterations += 1
+
+
+static func is_valid_book_data(data:Variant) -> bool:
+	if not data is Dictionary or not data.get("books") is Array or data["books"].is_empty():
+		return false
+	for book_data in data["books"]:
+		if not book_data is Dictionary or not book_data.get("name") is String or not book_data.get("chapters") is Array:
+			return false
+		for chapter_data in book_data["chapters"]:
+			if not chapter_data is Dictionary or not chapter_data.get("verses") is Array:
+				return false
+			for verse_data in chapter_data["verses"]:
+				if not verse_data is Dictionary or not verse_data.get("text") is String:
+					return false
+				for key in ["chapter", "verse"]:
+					if not (verse_data.get(key) is int or verse_data.get(key) is float) or verse_data[key] < 1:
+						return false
+	return true

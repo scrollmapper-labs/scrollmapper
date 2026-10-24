@@ -1,0 +1,110 @@
+[gd_resource type="Theme" load_steps=10 format=3]
+
+[ext_resource type="FontFile" path="res://theme/fonts/Noto_Sans/static/NotoSans-Regular.ttf" id="font"]
+
+[sub_resource type="StyleBoxFlat" id="normal"]
+bg_color = Color(0.11, 0.16, 0.20, 1)
+content_margin_left = 14.0
+content_margin_right = 14.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+
+[sub_resource type="StyleBoxFlat" id="hover"]
+bg_color = Color(0.17, 0.23, 0.27, 1)
+content_margin_left = 14.0
+content_margin_right = 14.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+
+[sub_resource type="StyleBoxFlat" id="pressed"]
+bg_color = Color(0.26, 0.32, 0.33, 1)
+content_margin_left = 14.0
+content_margin_right = 14.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_left = 2
+border_color = Color(0.82, 0.69, 0.45, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[sub_resource type="StyleBoxFlat" id="focus"]
+bg_color = Color(0, 0, 0, 0)
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.82, 0.69, 0.45, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+
+[sub_resource type="StyleBoxFlat" id="scroll"]
+bg_color = Color(0.40, 0.43, 0.43, 0.85)
+content_margin_left = 6.0
+content_margin_top = 8.0
+content_margin_right = 6.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="scroll_track"]
+bg_color = Color(0.30, 0.34, 0.36, 0.15)
+content_margin_left = 6.0
+content_margin_right = 6.0
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="scroll_active"]
+bg_color = Color(0.67, 0.56, 0.38, 1)
+content_margin_left = 6.0
+content_margin_top = 8.0
+content_margin_right = 6.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[resource]
+default_font = ExtResource("font")
+default_font_size = 15
+Button/colors/font_color = Color(0.88, 0.90, 0.90, 1)
+Button/colors/font_hover_color = Color(1, 0.96, 0.86, 1)
+Button/colors/font_pressed_color = Color(1, 0.94, 0.80, 1)
+Button/colors/font_disabled_color = Color(0.4, 0.45, 0.48, 1)
+Button/styles/normal = SubResource("normal")
+Button/styles/hover = SubResource("hover")
+Button/styles/pressed = SubResource("pressed")
+Button/styles/disabled = SubResource("empty")
+Button/styles/focus = SubResource("focus")
+Label/colors/font_color = Color(0.93, 0.93, 0.90, 1)
+RichTextLabel/colors/default_color = Color(0.87, 0.89, 0.89, 1)
+LineEdit/styles/normal = SubResource("normal")
+LineEdit/styles/focus = SubResource("focus")
+LineEdit/colors/font_color = Color(0.91, 0.92, 0.90, 1)
+OptionButton/styles/normal = SubResource("normal")
+OptionButton/styles/hover = SubResource("hover")
+OptionButton/styles/pressed = SubResource("pressed")
+OptionButton/styles/focus = SubResource("focus")
+VScrollBar/styles/scroll = SubResource("scroll_track")
+VScrollBar/styles/grabber = SubResource("scroll")
+VScrollBar/styles/grabber_highlight = SubResource("scroll_active")
+VScrollBar/styles/grabber_pressed = SubResource("scroll_active")
