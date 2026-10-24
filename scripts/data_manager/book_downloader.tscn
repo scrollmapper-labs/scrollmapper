@@ -4,8 +4,6 @@
 script/source = "@icon(\"res://images/icons/editor/ArrowDown.svg\")
 extends ResourceDownloader
 
-class_name BookDownloader
-
 func _ready() -> void:
 	http_request = HTTPRequest.new()
 	add_child(http_request)	
